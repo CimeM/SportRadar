@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B253A0C1D02D75B0036ABBD /* ResortManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B253A0B1D02D75B0036ABBD /* ResortManager.swift */; };
+		5B2F15D31D0441D200F3CE4A /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2F15D21D0441D200F3CE4A /* GameManager.swift */; };
 		5BA843B61CFDC324003B5535 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA843B51CFDC324003B5535 /* AppDelegate.swift */; };
 		5BA843B81CFDC324003B5535 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA843B71CFDC324003B5535 /* ViewController.swift */; };
 		5BA843BB1CFDC324003B5535 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BA843B91CFDC324003B5535 /* Main.storyboard */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5B253A0B1D02D75B0036ABBD /* ResortManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResortManager.swift; sourceTree = "<group>"; };
+		5B2F15D21D0441D200F3CE4A /* GameManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
 		5BA843B21CFDC324003B5535 /* SportRadar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SportRadar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BA843B51CFDC324003B5535 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5BA843B71CFDC324003B5535 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -56,15 +60,41 @@
 		5BA843B41CFDC324003B5535 /* SportRadar */ = {
 			isa = PBXGroup;
 			children = (
-				5BA843B51CFDC324003B5535 /* AppDelegate.swift */,
-				5BA843B71CFDC324003B5535 /* ViewController.swift */,
-				5BA843B91CFDC324003B5535 /* Main.storyboard */,
+				5BA843CC1CFDC361003B5535 /* Controller */,
+				5BA843CB1CFDC349003B5535 /* View */,
 				5BA843BF1CFDC324003B5535 /* Assets.xcassets */,
+				5BA843CA1CFDC336003B5535 /* extra */,
+			);
+			path = SportRadar;
+			sourceTree = "<group>";
+		};
+		5BA843CA1CFDC336003B5535 /* extra */ = {
+			isa = PBXGroup;
+			children = (
+				5BA843B51CFDC324003B5535 /* AppDelegate.swift */,
 				5BA843C11CFDC324003B5535 /* LaunchScreen.storyboard */,
 				5BA843C41CFDC324003B5535 /* Info.plist */,
 				5BA843BC1CFDC324003B5535 /* SportRadar.xcdatamodeld */,
 			);
-			path = SportRadar;
+			name = extra;
+			sourceTree = "<group>";
+		};
+		5BA843CB1CFDC349003B5535 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5BA843B71CFDC324003B5535 /* ViewController.swift */,
+				5B253A0B1D02D75B0036ABBD /* ResortManager.swift */,
+				5BA843B91CFDC324003B5535 /* Main.storyboard */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		5BA843CC1CFDC361003B5535 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5B2F15D21D0441D200F3CE4A /* GameManager.swift */,
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,6 +169,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B253A0C1D02D75B0036ABBD /* ResortManager.swift in Sources */,
+				5B2F15D31D0441D200F3CE4A /* GameManager.swift in Sources */,
 				5BA843BE1CFDC324003B5535 /* SportRadar.xcdatamodeld in Sources */,
 				5BA843B81CFDC324003B5535 /* ViewController.swift in Sources */,
 				5BA843B61CFDC324003B5535 /* AppDelegate.swift in Sources */,
@@ -293,6 +325,7 @@
 				5BA843C91CFDC324003B5535 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
