@@ -8,8 +8,14 @@
 
 //import Foundation
 import UIKit
+//import QuartzCore
 
-class ResortManager: UIView  {
+protocol MatchPitchProtocol {
+    func setresultForHome(score: Int)
+    func setresultForAway(score: Int)
+}
+
+class ResortManager:  UIView, MatchPitchProtocol  {
 
     enum CourtType {
         case Tenis
@@ -18,19 +24,132 @@ class ResortManager: UIView  {
         case notDefined
     }
     
+    var gameManager = GameManager()
+    let scoreBoard = CALayer()
+    let scoreText = CATextLayer()
+    
+    func setresultForHome(score: Int) {
+        self.gameManager.scoreTeam1 = score
+    }
+    func setresultForAway(score: Int) {
+        self.gameManager.scoreTeam2 = score
+    }
+    
+    //scoreBoard.frame = frame: CGRect(x: 100, y: 0, width: 100, height: 100)
+    
     var typeOfCourt : CourtType
     //var courtOuterFrame : CGRect
 
-    init(frame: CGRect, courtType: CourtType) {
+    
+    init(frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100),
+         courtType: CourtType = .Basketball) {
+        
         self.typeOfCourt = courtType
         super.init(frame: frame)
+        
+        
+        self.scoreBoard.frame = CGRect(x: -100, y: 50, width: 100, height: 50)
+        self.scoreBoard.backgroundColor = UIColor.redColor().CGColor
+        self.scoreText.string = "\(gameManager.scoreTeam1):\(gameManager.scoreTeam2)"
+        self.scoreText.frame = self.scoreBoard.frame
+        self.scoreText.frame.origin=CGPoint(x:0, y:0)
+        self.scoreText.alignmentMode = "center"
+        //layer.insertSublayer(self.scoreBoard, atIndex: 2)
+        scoreBoard.addSublayer(self.scoreText)
+        self.layer.addSublayer(self.scoreBoard)
+        
+    }
+    
+    func showScoreboard() {
+        let fromValue = self.scoreBoard.frame.origin.x
+        let toValue = frame.width/2 - scoreBoard.frame.width/2 // to center
+        scoreBoard.speed = 0.5
+        self.scoreBoard.frame.origin.x = toValue
+        let positionAnimation = CABasicAnimation(keyPath: "frame.origin.x")
+        
+        positionAnimation.fromValue = fromValue
+        positionAnimation.toValue = toValue
+        
+
+        self.scoreBoard.addAnimation(positionAnimation, forKey: "frame.origin.x")
+
+        //_ = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(ResortManager.updateScorelabel), userInfo: nil, repeats: false)
+        
+    }
+    func updateScorelabel() {
+        
+        let fromValue = self.scoreText
+        let toValue = "\(self.gameManager.scoreTeam1):\(self.gameManager.scoreTeam2)"
+
+        scoreText.speed = 1
+        self.scoreText.string = toValue
+        let positionAnimation = CABasicAnimation(keyPath: "string")
+        
+        positionAnimation.fromValue = fromValue
+        positionAnimation.toValue = toValue
+
+        self.scoreBoard.addAnimation(positionAnimation, forKey: "string")
+        
+        //_ = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(ResortManager.hideScoreboard), userInfo: nil, repeats: false)
+        
+    }
+
+    func hideScoreboard() {
+        let fromValue = self.scoreBoard.frame.origin.x
+        let toValue = frame.width
+        scoreBoard.speed = 0.5
+        self.scoreBoard.frame.origin.x = toValue
+        let positionAnimation = CABasicAnimation(keyPath: "frame.origin.x")
+        
+        positionAnimation.fromValue = fromValue
+        positionAnimation.toValue = toValue
+        
+        self.scoreBoard.addAnimation(positionAnimation, forKey: "frame.origin.x")
+
+        //_ = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(ResortManager.resetScoreboard), userInfo: nil, repeats: false)
+    }
+    
+    func resetScoreboard(){
+        let fromValue = self.scoreBoard.frame.origin.x
+        let toValue = 0 - scoreBoard.frame.width
+        CATransaction.setDisableActions(true)
+        print(time)
+        scoreBoard.speed = 0.5
+        self.scoreBoard.frame.origin.x = toValue
+        let positionAnimation = CABasicAnimation(keyPath: "frame.origin.x")
+        
+        positionAnimation.fromValue = fromValue
+        positionAnimation.toValue = toValue
+        
+        self.scoreBoard.addAnimation(positionAnimation, forKey: "frame.origin.x")
+        
+    }
+        
+    
+    
+    func scoreBoardAnimation() {
+        
+        //animation timeframes
+        let showScoreboardAtTime            = NSTimeInterval(0)
+        let updateScoreboardLabelAtTime     = NSTimeInterval(1)
+        let hideScoreboardAtTime            = NSTimeInterval(2)
+        let resetScoreboardPositionAtTime   = NSTimeInterval(3)
+        
+        
+        _ = NSTimer.scheduledTimerWithTimeInterval(showScoreboardAtTime, target: self, selector: #selector(ResortManager.showScoreboard), userInfo: nil, repeats: false)
+        
+        _ = NSTimer.scheduledTimerWithTimeInterval(updateScoreboardLabelAtTime, target: self, selector: #selector(ResortManager.updateScorelabel), userInfo: nil, repeats: false)
+        
+        _ = NSTimer.scheduledTimerWithTimeInterval(hideScoreboardAtTime, target: self, selector: #selector(ResortManager.hideScoreboard), userInfo: nil, repeats: false)
+        
+        _ = NSTimer.scheduledTimerWithTimeInterval(resetScoreboardPositionAtTime, target: self, selector: #selector(ResortManager.resetScoreboard), userInfo: nil, repeats: false)
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-
     override func drawRect(rect: CGRect) {
         
         if typeOfCourt == .Tenis {

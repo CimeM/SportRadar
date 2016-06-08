@@ -13,24 +13,27 @@ import UIKit
 class ViewController: UIViewController {
 
     
-    var screenWidth = CGFloat(0)
+    var screenWidth             = CGFloat(0)
     var contentVerticalMargin = CGFloat(40)
-    var courtFieldWidth = CGFloat(0)//screen width
-    var courtFieldHeight = CGFloat(0)
-    var courtX = CGFloat(0)
-    var courtY = CGFloat(0)
-    var courtFrame = CGRect()
+    var courtFieldWidth         = CGFloat(0)
+    var courtFieldHeight        = CGFloat(0)
+    var courtX                  = CGFloat(0)
+    var courtY                  = CGFloat(0)
+    var courtFrame              = CGRect()
     
-    var courtField = UIView()
+    var courtField              = ResortManager()
     
-    var scoreBoardItem = UIView()
+    var team1scoreInput         = UITextField()
+    var team2scoreInput         = UITextField()
+    var scoreLabel              = UILabel()
+    let scoreboardButton        = UIButton()
     
-    var gameManager = GameManager()
+    let buttonWidth = CGFloat(70)
+    let buttonHeight = CGFloat(40)
     
-    var team1scoreInput = UITextField()
-    var team2scoreInput = UITextField()
-    var scoreLabel = UILabel()
-    let scoreboardButton   = UIButton()
+    let tenisButton             = UIButton()
+    let basketButton            = UIButton()
+    let footbalButton           = UIButton()
     
     enum CourtType {
         case Tenis
@@ -39,61 +42,27 @@ class ViewController: UIViewController {
         case notDefined
     }
     
-    func animateScoreboardAction(sender: UIButton!) {
-        
-        // save scores
-        
-        if team1scoreInput.text == nil {
-            
-            team1scoreInput.text = "\(gameManager.scoreTeam1)"
-        }
-        if team2scoreInput.text == nil {
-            
-            team2scoreInput.text = "\(gameManager.scoreTeam2)"
-        }
-        
-        
-        //TODO number imput only
-        gameManager.setScore(Int(team1scoreInput.text!)!,
-                             team2Score: Int(team2scoreInput.text!)!)
-        
-        
-        let options = UIViewKeyframeAnimationOptions.CalculationModeLinear
-        
-        UIView.animateKeyframesWithDuration(5, delay: 0, options: options, animations: {
-            
-            
-            UIView.addKeyframeWithRelativeStartTime(0, relativeDuration: 1/5, animations: {
-                
-                self.scoreBoardItem.frame.origin.x = self.view.frame.width/2-self.scoreBoardItem.frame.width/2
-            })
-            UIView.addKeyframeWithRelativeStartTime(2/5, relativeDuration: 1/5, animations: {
-                
-                
-                self.scoreLabel.text = "\(self.gameManager.scoreTeam1):\(self.gameManager.scoreTeam2)"
-                
-                
-                
-            })
-            UIView.addKeyframeWithRelativeStartTime(3/5, relativeDuration: 2/5, animations: {
-                self.scoreBoardItem.frame.origin.x = self.view.frame.width-1
-                
-            })
-            
-            }, completion: {finished in
-                // any code entered here will be applied
-                // once the animation has completed
-                
-        })
-        
-    }
     
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+    }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // tap outside the text field to dismiss the keyboard
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+        
+        setup()
+    }
     
     override func viewDidAppear(animated: Bool) {
         
+        // positions visual elements relative to the screen width & height
+        
         screenWidth = self.view.frame.width
-        // define view's bounds
         self.courtFieldWidth = screenWidth
         self.courtFieldHeight = (courtFieldWidth/2) // if height changes - field's ratio stays the same
         self.courtX = CGFloat(0)
@@ -102,102 +71,9 @@ class ViewController: UIViewController {
         
         self.showCourt(.Football)
         
-        
-        // input text fields
-         team1scoreInput = UITextField(frame: CGRect(x: courtX+contentVerticalMargin,
-            y: courtFrame.height+courtY+contentVerticalMargin,
-            width: screenWidth/2 - (2*contentVerticalMargin),
-            height: 40))
-        team1scoreInput.borderStyle = UITextBorderStyle.Line
-        team1scoreInput.autocapitalizationType = UITextAutocapitalizationType.Words
-        team1scoreInput.text = "0"
-        view.addSubview(team1scoreInput)
-        
-         team2scoreInput = UITextField(frame: CGRect(
-            x: team1scoreInput.frame.origin.x+team1scoreInput.frame.width+contentVerticalMargin,
-            y: team1scoreInput.frame.origin.y,
-            width: team1scoreInput.frame.width,
-            height: team1scoreInput.frame.height))
-        team2scoreInput.borderStyle = UITextBorderStyle.Line
-        team2scoreInput.text = "0"
-        team2scoreInput.autocapitalizationType = UITextAutocapitalizationType.Words
-        view.addSubview(team2scoreInput)
-        
-        
-        
-        // positioning scoreboard to the centre of the court
-        let scoreboardwidth = CGFloat(100)
-        let scoreboardheight = CGFloat(50)
-        let scoreboardOriginY = courtY+courtField.frame.height/2-scoreboardheight/2
-        let scoreboardOriginX = self.view.frame.width-1
-        self.scoreBoardItem.frame =  CGRect(x: scoreboardOriginX,
-            y: scoreboardOriginY,
-            width: scoreboardwidth,
-            height: scoreboardheight)
-        
-        self.scoreLabel.frame = CGRect(x: 0, y: 0, width: scoreboardwidth, height: scoreboardheight)
-        self.scoreLabel.textAlignment = NSTextAlignment.Center
-        
-        self.scoreboardButton.frame.origin.y = self.team2scoreInput.frame.origin.y + self.team2scoreInput.frame.height+contentVerticalMargin
-        
-    }
-    
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
-    
-    func dismissKeyboard() {
-        //Causes the view (or one of its embedded text fields) to resign the first responder status.
-        view.endEditing(true)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.dismissKeyboard))
-        view.addGestureRecognizer(tap)
-        
-        
-        //scoreboard
-        
-        self.scoreBoardItem.backgroundColor = UIColor.redColor()
-        self.scoreLabel.text = "0:0"
-        self.scoreLabel.textColor = UIColor.blackColor()
-        scoreBoardItem.insertSubview(scoreLabel, atIndex: 5)
-        view.insertSubview(scoreBoardItem, atIndex: 3)
-        
-        
-        let tenisButton   = UIButton()
-        tenisButton.frame = CGRectMake(contentVerticalMargin/2, contentVerticalMargin, 70, 40)
-        tenisButton.backgroundColor = UIColor.blueColor()
-        tenisButton.setTitle("Tenis", forState: UIControlState.Normal)
-        tenisButton.addTarget(self, action: #selector(tenisButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(tenisButton)
-        
-        let basketButton   = UIButton()
-        basketButton.frame = CGRectMake(tenisButton.frame.origin.x+tenisButton.frame.width+contentVerticalMargin/2, contentVerticalMargin, 70, 40)
-        basketButton.backgroundColor = UIColor.blueColor()
-        basketButton.setTitle("Basket", forState: UIControlState.Normal)
-        basketButton.addTarget(self, action: #selector(basketButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(basketButton)
-        
-        let footbalButton   = UIButton()
-        footbalButton.frame = CGRectMake(basketButton.frame.origin.x+basketButton.frame.width+contentVerticalMargin/2, contentVerticalMargin, 70, 40)
-        footbalButton.backgroundColor = UIColor.blueColor()
-        footbalButton.setTitle("Footbal", forState: UIControlState.Normal)
-        footbalButton.addTarget(self, action: #selector(footbalButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(footbalButton)
-        
-        
-        
-        scoreboardButton.frame = CGRectMake(tenisButton.frame.origin.x+tenisButton.frame.width+contentVerticalMargin/2, contentVerticalMargin, 70, 40)        
-        scoreboardButton.backgroundColor = UIColor.darkGrayColor()
-        scoreboardButton.setTitle("Button", forState: UIControlState.Normal)
-        scoreboardButton.addTarget(self, action: #selector(animateScoreboardAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(scoreboardButton)
+        team1scoreInput.frame.origin.y =  courtY + courtFieldHeight + contentVerticalMargin
+        team2scoreInput.frame.origin.y =  courtY + courtFieldHeight + contentVerticalMargin
+        scoreboardButton.frame.origin.y =  contentVerticalMargin + team2scoreInput.frame.origin.y+team2scoreInput.frame.height
         
     }
     
@@ -208,16 +84,18 @@ class ViewController: UIViewController {
         self.showCourt(.Basketball)
     }
     func tenisButtonAction(sender: UIButton!) {
-        
         self.showCourt(.Tenis)
-        
+    }
+    func animateScoreboardAction(sender: UIButton!) {
+        courtField.setresultForHome(Int(team1scoreInput.text!)!)
+        courtField.setresultForAway(Int(team2scoreInput.text!)!)
+        self.courtField.scoreBoardAnimation()
     }
     
     
     func showCourt(courtType : CourtType){
     
         self.view.viewWithTag(2)?.removeFromSuperview()
-        
         
         switch courtType {
         case .Basketball:
@@ -229,19 +107,147 @@ class ViewController: UIViewController {
         }
         
         self.courtField.backgroundColor = UIColor.lightGrayColor()
-        
         self.courtField.tag = 2
-        
         view.insertSubview(courtField, atIndex: 2)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    /**
+     
+     Draws the custom visual elements: buttons, court field, input fields
+     */
+    func setup() {
+        
+        textFieldInitialization()
+        
+        //scoreboard button frame
+        self.scoreboardButton.frame.origin.y = self.team2scoreInput.frame.origin.y + self.team2scoreInput.frame.height+contentVerticalMargin
+        
+        
+        // court change buttons
+        tenisButton.frame = CGRectMake(contentVerticalMargin/2, contentVerticalMargin, buttonWidth, buttonHeight)
+        tenisButton.backgroundColor = UIColor.blueColor()
+        tenisButton.setTitle("Tenis", forState: UIControlState.Normal)
+        tenisButton.addTarget(self, action: #selector(tenisButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(tenisButton)
+        
+        basketButton.frame = tenisButton.frame
+        basketButton.frame.origin.x += (tenisButton.frame.width+contentVerticalMargin)
+        basketButton.backgroundColor = UIColor.blueColor()
+        basketButton.setTitle("Basket", forState: UIControlState.Normal)
+        basketButton.addTarget(self, action: #selector(basketButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(basketButton)
+        
+        footbalButton.frame = basketButton.frame
+        footbalButton.frame.origin.x += (basketButton.frame.width+contentVerticalMargin)
+        footbalButton.backgroundColor = UIColor.blueColor()
+        footbalButton.setTitle("Footbal", forState: UIControlState.Normal)
+        footbalButton.addTarget(self, action: #selector(footbalButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(footbalButton)
+        
+        scoreboardButton.frame = CGRectMake(tenisButton.frame.origin.x+tenisButton.frame.width+contentVerticalMargin/2, contentVerticalMargin, buttonWidth, buttonHeight)
+        scoreboardButton.backgroundColor = UIColor.darkGrayColor()
+        scoreboardButton.setTitle("Button", forState: UIControlState.Normal)
+        scoreboardButton.addTarget(self, action: #selector(animateScoreboardAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(scoreboardButton)
+        
+        
     }
     
     
-
-
+    func textFieldInitialization () {
+        
+        team1scoreInput = UITextField(frame: CGRect(x: contentVerticalMargin,
+            y: 0,
+            width: self.buttonWidth,
+            height: 40))
+        team1scoreInput.borderStyle = UITextBorderStyle.Line
+        team1scoreInput.autocapitalizationType = UITextAutocapitalizationType.Words
+        team1scoreInput.text = "0"
+        //team1scoreInput.delegate = self
+        team1scoreInput.keyboardType = UIKeyboardType.NumberPad
+        view.addSubview(team1scoreInput)
+        
+        team2scoreInput = UITextField(frame: CGRect(
+            x: team1scoreInput.frame.origin.x+team1scoreInput.frame.width+contentVerticalMargin,
+            y: 0,
+            width: self.buttonWidth,
+            height: team1scoreInput.frame.height))
+        team2scoreInput.borderStyle = UITextBorderStyle.Line
+        team2scoreInput.text = "0"
+        //team2scoreInput.delegate = self
+        team2scoreInput.keyboardType = UIKeyboardType.NumberPad
+        view.addSubview(team2scoreInput)
+        
+        
+        
+        
+        
+    }
+    
+    // MARK: UITextFieldDelegate events and related methods
+    
+    func textField(textField: UITextField,
+                   shouldChangeCharactersInRange range: NSRange,
+                                                 replacementString string: String)
+        -> Bool
+    {
+        // We ignore any change that doesn't add characters to the text field.
+        // These changes are things like character deletions and cuts, as well
+        // as moving the insertion point.
+        //
+        // We still return true to allow the change to take place.
+        if string.characters.count == 0 {
+            return true
+        }
+        
+        // Check to see if the text field's contents still fit the constraints
+        // with the new content added to it.
+        // If the contents still fit the constraints, allow the change
+        // by returning true; otherwise disallow the change by returning false.
+        let currentText = textField.text ?? ""
+        let prospectiveText = (currentText as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        
+        switch textField {
+            
+            // Allow only digits in this field,
+        // and limit its contents to a maximum of 3 characters.
+        case team2scoreInput:
+            return prospectiveText.containsOnlyCharactersIn("0123456789") &&
+                prospectiveText.characters.count <= 3
+            // Allow only digits in this field,
+        // and limit its contents to a maximum of 3 characters.
+        case team1scoreInput:
+            return prospectiveText.containsOnlyCharactersIn("0123456789") &&
+                prospectiveText.characters.count <= 3
+            
+                  // Do not put constraints on any other text field in this view
+        // that uses this class as its delegate.
+        default:
+            return true
+        }
+        
+    }
+    
+    // Dismiss the keyboard when the user taps the "Return" key or its equivalent
+    // while editing a text field.
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true;
+    }
 }
 
+extension String {
+    
+    
+    // Returns true if the string contains only characters found in matchCharacters.
+    func containsOnlyCharactersIn(matchCharacters: String) -> Bool {
+        let disallowedCharacterSet = NSCharacterSet(charactersInString: matchCharacters).invertedSet
+        return self.rangeOfCharacterFromSet(disallowedCharacterSet) == nil
+    }
+    
+}
