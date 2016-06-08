@@ -10,7 +10,7 @@ import UIKit
 
 
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
 
     
     var screenWidth             = CGFloat(0)
@@ -168,7 +168,7 @@ class ViewController: UIViewController {
         team1scoreInput.borderStyle = UITextBorderStyle.Line
         team1scoreInput.autocapitalizationType = UITextAutocapitalizationType.Words
         team1scoreInput.text = "0"
-        //team1scoreInput.delegate = self
+        team1scoreInput.delegate = self
         team1scoreInput.keyboardType = UIKeyboardType.NumberPad
         view.addSubview(team1scoreInput)
         
@@ -179,7 +179,7 @@ class ViewController: UIViewController {
             height: team1scoreInput.frame.height))
         team2scoreInput.borderStyle = UITextBorderStyle.Line
         team2scoreInput.text = "0"
-        //team2scoreInput.delegate = self
+        team2scoreInput.delegate = self
         team2scoreInput.keyboardType = UIKeyboardType.NumberPad
         view.addSubview(team2scoreInput)
         

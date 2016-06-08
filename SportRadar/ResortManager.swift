@@ -76,6 +76,7 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         //_ = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(ResortManager.updateScorelabel), userInfo: nil, repeats: false)
         
     }
+    
     func updateScorelabel() {
         
         let fromValue = self.scoreText
@@ -124,8 +125,6 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         self.scoreBoard.addAnimation(positionAnimation, forKey: "frame.origin.x")
         
     }
-        
-    
     
     func scoreBoardAnimation() {
         
@@ -136,13 +135,21 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         let resetScoreboardPositionAtTime   = NSTimeInterval(3)
         
         
-        _ = NSTimer.scheduledTimerWithTimeInterval(showScoreboardAtTime, target: self, selector: #selector(ResortManager.showScoreboard), userInfo: nil, repeats: false)
+        _ = NSTimer.scheduledTimerWithTimeInterval(showScoreboardAtTime, target: self,
+                                                   selector: #selector(ResortManager.showScoreboard),
+                                                   userInfo: nil, repeats: false)
         
-        _ = NSTimer.scheduledTimerWithTimeInterval(updateScoreboardLabelAtTime, target: self, selector: #selector(ResortManager.updateScorelabel), userInfo: nil, repeats: false)
+        _ = NSTimer.scheduledTimerWithTimeInterval(updateScoreboardLabelAtTime, target: self,
+                                                   selector: #selector(ResortManager.updateScorelabel),
+                                                   userInfo: nil, repeats: false)
         
-        _ = NSTimer.scheduledTimerWithTimeInterval(hideScoreboardAtTime, target: self, selector: #selector(ResortManager.hideScoreboard), userInfo: nil, repeats: false)
+        _ = NSTimer.scheduledTimerWithTimeInterval(hideScoreboardAtTime, target: self,
+                                                   selector: #selector(ResortManager.hideScoreboard),
+                                                   userInfo: nil, repeats: false)
         
-        _ = NSTimer.scheduledTimerWithTimeInterval(resetScoreboardPositionAtTime, target: self, selector: #selector(ResortManager.resetScoreboard), userInfo: nil, repeats: false)
+        _ = NSTimer.scheduledTimerWithTimeInterval(resetScoreboardPositionAtTime, target: self,
+                                                   selector: #selector(ResortManager.resetScoreboard),
+                                                   userInfo: nil, repeats: false)
         
     }
     
