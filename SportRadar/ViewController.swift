@@ -42,8 +42,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         case notDefined
     }
     
-    
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
     }
@@ -110,7 +108,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.courtField.tag = 2
         view.insertSubview(courtField, atIndex: 2)
     }
-    
     
     func dismissKeyboard() {
         view.endEditing(true)
@@ -182,10 +179,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         team2scoreInput.delegate = self
         team2scoreInput.keyboardType = UIKeyboardType.NumberPad
         view.addSubview(team2scoreInput)
-        
-        
-        
-        
         
     }
     

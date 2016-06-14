@@ -27,15 +27,13 @@ class ResortManager:  UIView, MatchPitchProtocol  {
     var gameManager = GameManager()
     let scoreBoard = CALayer()
     let scoreText = CATextLayer()
-    
+    var animationRunning = false
     func setresultForHome(score: Int) {
         self.gameManager.scoreTeam1 = score
     }
     func setresultForAway(score: Int) {
         self.gameManager.scoreTeam2 = score
     }
-    
-    //scoreBoard.frame = frame: CGRect(x: 100, y: 0, width: 100, height: 100)
     
     var typeOfCourt : CourtType
     //var courtOuterFrame : CGRect
@@ -47,12 +45,11 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         self.typeOfCourt = courtType
         super.init(frame: frame)
         
-        
         self.scoreBoard.frame = CGRect(x: -100, y: 50, width: 100, height: 50)
-        self.scoreBoard.backgroundColor = UIColor.redColor().CGColor
+        self.scoreBoard.backgroundColor = UIColor.blueColor().CGColor
         self.scoreText.string = "\(gameManager.scoreTeam1):\(gameManager.scoreTeam2)"
         self.scoreText.frame = self.scoreBoard.frame
-        self.scoreText.frame.origin=CGPoint(x:0, y:0)
+        self.scoreText.frame.origin = CGPoint(x:0, y:0)
         self.scoreText.alignmentMode = "center"
         //layer.insertSublayer(self.scoreBoard, atIndex: 2)
         scoreBoard.addSublayer(self.scoreText)
@@ -61,6 +58,7 @@ class ResortManager:  UIView, MatchPitchProtocol  {
     }
     
     func showScoreboard() {
+        
         let fromValue = self.scoreBoard.frame.origin.x
         let toValue = frame.width/2 - scoreBoard.frame.width/2 // to center
         scoreBoard.speed = 0.5
@@ -70,10 +68,8 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         positionAnimation.fromValue = fromValue
         positionAnimation.toValue = toValue
         
-
         self.scoreBoard.addAnimation(positionAnimation, forKey: "frame.origin.x")
 
-        //_ = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(ResortManager.updateScorelabel), userInfo: nil, repeats: false)
         
     }
     
@@ -115,7 +111,7 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         let toValue = 0 - scoreBoard.frame.width
         CATransaction.setDisableActions(true)
         print(time)
-        scoreBoard.speed = 0.5
+        scoreBoard.speed = 100
         self.scoreBoard.frame.origin.x = toValue
         let positionAnimation = CABasicAnimation(keyPath: "frame.origin.x")
         
@@ -133,24 +129,36 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         let updateScoreboardLabelAtTime     = NSTimeInterval(1)
         let hideScoreboardAtTime            = NSTimeInterval(2)
         let resetScoreboardPositionAtTime   = NSTimeInterval(3)
+        let resetAnimationRunningFlag       = NSTimeInterval(4)
         
+        if animationRunning == false {
+            self.animationRunning = true
+            _ = NSTimer.scheduledTimerWithTimeInterval(showScoreboardAtTime, target: self,
+                                                       selector: #selector(ResortManager.showScoreboard),
+                                                       userInfo: nil, repeats: false)
+            
+            _ = NSTimer.scheduledTimerWithTimeInterval(updateScoreboardLabelAtTime, target: self,
+                                                       selector: #selector(ResortManager.updateScorelabel),
+                                                       userInfo: nil, repeats: false)
+            
+            _ = NSTimer.scheduledTimerWithTimeInterval(hideScoreboardAtTime, target: self,
+                                                       selector: #selector(ResortManager.hideScoreboard),
+                                                       userInfo: nil, repeats: false)
+            
+            _ = NSTimer.scheduledTimerWithTimeInterval(resetScoreboardPositionAtTime, target: self,
+                                                       selector: #selector(ResortManager.resetScoreboard),
+                                                       userInfo: nil, repeats: false)
+            _ = NSTimer.scheduledTimerWithTimeInterval(resetAnimationRunningFlag, target: self,
+                                                       selector: #selector(ResortManager.resetAnimationRuningFlag),
+                                                       userInfo: nil, repeats: false)
+            
+        }
         
-        _ = NSTimer.scheduledTimerWithTimeInterval(showScoreboardAtTime, target: self,
-                                                   selector: #selector(ResortManager.showScoreboard),
-                                                   userInfo: nil, repeats: false)
-        
-        _ = NSTimer.scheduledTimerWithTimeInterval(updateScoreboardLabelAtTime, target: self,
-                                                   selector: #selector(ResortManager.updateScorelabel),
-                                                   userInfo: nil, repeats: false)
-        
-        _ = NSTimer.scheduledTimerWithTimeInterval(hideScoreboardAtTime, target: self,
-                                                   selector: #selector(ResortManager.hideScoreboard),
-                                                   userInfo: nil, repeats: false)
-        
-        _ = NSTimer.scheduledTimerWithTimeInterval(resetScoreboardPositionAtTime, target: self,
-                                                   selector: #selector(ResortManager.resetScoreboard),
-                                                   userInfo: nil, repeats: false)
-        
+    }
+    
+    func resetAnimationRuningFlag () {
+    
+        self.animationRunning = false
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -159,19 +167,20 @@ class ResortManager:  UIView, MatchPitchProtocol  {
     
     override func drawRect(rect: CGRect) {
         
+            UIColor.whiteColor().setStroke()
+            let courtFieldPadding = CGFloat(10)
+        
         if typeOfCourt == .Tenis {
             
-            UIColor.darkGrayColor().setStroke()
             let bbCourtWidth = 72.0 //width should be =< 2x court_height
             let bbCourtHeight = 36.0
             let fieldRatio = CGFloat(bbCourtWidth/bbCourtHeight) //basketball 94/50 (NCAA)
-            let courtFieldPadding = CGFloat(2)
             
             // main frame dimentions
             let courtHeigth = rect.height - ( 2*courtFieldPadding )
             let courtWidth = fieldRatio*courtHeigth
             let courtX = (rect.width/2) - (courtWidth/2)
-            let courtY = (rect.height/2) - (courtHeigth/2) //+ fieldView.frame.origin.y
+            let courtY = (rect.height/2) - (courtHeigth/2)
             let feetToPixelRatio = Double(courtWidth)/bbCourtWidth
             
             // draw main frame
@@ -219,11 +228,9 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         }
         else if typeOfCourt == .Football {
             
-            UIColor.darkGrayColor().setStroke()
             let fbCourtWidth = 100.0
             let fbCourtHeight = 50.0
             let fieldRatio = CGFloat(fbCourtWidth/fbCourtHeight) //footbal 2/1 (NCAA)
-            let courtFieldPadding = CGFloat(2)
             
             // main frame dimentions
             let courtHeigth = rect.height - ( 2*courtFieldPadding )
@@ -323,11 +330,10 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         }
         else if typeOfCourt == .Basketball {
             
-                UIColor.darkGrayColor().setStroke()
                 let bbCourtWidth = 94.0
                 let bbCourtHeight = 50.0
                 let fieldRatio = CGFloat(bbCourtWidth/bbCourtHeight) //basketball 94/50 (NCAA)
-                let courtFieldPadding = CGFloat(2)
+            
                 
                 // main frame dimentions
                 let courtHeigth = rect.height - ( 2*courtFieldPadding )
@@ -456,11 +462,6 @@ class ResortManager:  UIView, MatchPitchProtocol  {
                 basketImprint.applyTransform(mirrorOverXOrigin)
                 basketImprint.applyTransform(translate)
                 basketImprint.stroke()
-                
-                
-            
-            
-            
             
         }
         else {
