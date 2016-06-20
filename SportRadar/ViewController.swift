@@ -10,8 +10,9 @@ import UIKit
 
 
 
-class ViewController: UIViewController, UITextFieldDelegate {
-
+class ViewController: UIViewController, MatchPitchProtocol, UITextFieldDelegate {
+    
+    
     
     var screenWidth             = CGFloat(0)
     var contentVerticalMargin = CGFloat(40)
@@ -35,6 +36,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
     let basketButton            = UIButton()
     let footbalButton           = UIButton()
     
+    
+    
+    
+    
     enum CourtType {
         case Tenis
         case Basketball
@@ -46,6 +51,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         super.viewWillAppear(animated)
     }
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,6 +61,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         setup()
     }
+    
+    
     
     override func viewDidAppear(animated: Bool) {
         
@@ -73,6 +81,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         team2scoreInput.frame.origin.y =  courtY + courtFieldHeight + contentVerticalMargin
         scoreboardButton.frame.origin.y =  contentVerticalMargin + team2scoreInput.frame.origin.y+team2scoreInput.frame.height
         
+        
+        
+        
     }
     
     func footbalButtonAction(sender: UIButton!) {
@@ -84,10 +95,21 @@ class ViewController: UIViewController, UITextFieldDelegate {
     func tenisButtonAction(sender: UIButton!) {
         self.showCourt(.Tenis)
     }
+    
+    
+    
+    
     func animateScoreboardAction(sender: UIButton!) {
-        courtField.setresultForHome(Int(team1scoreInput.text!)!)
-        courtField.setresultForAway(Int(team2scoreInput.text!)!)
+
+        
+        
+        //self.setresultForAway(Int(team1scoreInput.text!)!)
+        //self.setresultForHome(Int(team2scoreInput.text!)!)
+        //self.delegate?.setresultForHome(Int(team1scoreInput.text!)!)
+        self.courtField.scoreTeam2 = Int(team2scoreInput.text!)!
+        self.courtField.scoreTeam1 = Int(team1scoreInput.text!)!
         self.courtField.scoreBoardAnimation()
+        
     }
     
     
@@ -103,6 +125,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         default:
             self.courtField =  ResortManager(frame: courtFrame , courtType: .Football)
         }
+        
+        self.courtField.delegate1 = self
         
         self.courtField.backgroundColor = UIColor.lightGrayColor()
         self.courtField.tag = 2
@@ -232,6 +256,22 @@ class ViewController: UIViewController, UITextFieldDelegate {
         textField.resignFirstResponder()
         return true;
     }
+    
+    
+    
+    
+    func setresultForHome(score: Int) {
+        
+        self.team1scoreInput.text = "\(score)"
+    }
+    func setresultForAway(score: Int) {
+        self.team2scoreInput.text = "\(score)"
+        
+    }
+    
+    
+    
+    
 }
 
 extension String {
@@ -244,3 +284,9 @@ extension String {
     }
     
 }
+
+
+
+
+
+

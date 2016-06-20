@@ -10,13 +10,30 @@
 import UIKit
 //import QuartzCore
 
-protocol MatchPitchProtocol {
+protocol MatchPitchProtocol: class {
     func setresultForHome(score: Int)
     func setresultForAway(score: Int)
 }
 
-class ResortManager:  UIView, MatchPitchProtocol  {
+class ResortManager:  UIView  {
 
+    
+    
+    weak var delegate1: MatchPitchProtocol?
+    
+    
+    var gameManager = GameManager()
+    let scoreBoard = CALayer()
+    let scoreText = CATextLayer()
+    var animationRunning = false
+    
+    var scoreTeam1 = 0
+    var scoreTeam2 = 0
+
+    var typeOfCourt : CourtType
+    //var courtOuterFrame : CGRect
+
+    
     enum CourtType {
         case Tenis
         case Basketball
@@ -24,20 +41,7 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         case notDefined
     }
     
-    var gameManager = GameManager()
-    let scoreBoard = CALayer()
-    let scoreText = CATextLayer()
-    var animationRunning = false
-    func setresultForHome(score: Int) {
-        self.gameManager.scoreTeam1 = score
-    }
-    func setresultForAway(score: Int) {
-        self.gameManager.scoreTeam2 = score
-    }
     
-    var typeOfCourt : CourtType
-    //var courtOuterFrame : CGRect
-
     
     init(frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100),
          courtType: CourtType = .Basketball) {
@@ -47,7 +51,7 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         
         self.scoreBoard.frame = CGRect(x: -100, y: 50, width: 100, height: 50)
         self.scoreBoard.backgroundColor = UIColor.blueColor().CGColor
-        self.scoreText.string = "\(gameManager.scoreTeam1):\(gameManager.scoreTeam2)"
+        self.scoreText.string = "\(self.scoreTeam1):\(self.scoreTeam2)"
         self.scoreText.frame = self.scoreBoard.frame
         self.scoreText.frame.origin = CGPoint(x:0, y:0)
         self.scoreText.alignmentMode = "center"
@@ -55,7 +59,10 @@ class ResortManager:  UIView, MatchPitchProtocol  {
         scoreBoard.addSublayer(self.scoreText)
         self.layer.addSublayer(self.scoreBoard)
         
+        
+        
     }
+    
     
     func showScoreboard() {
         
@@ -76,7 +83,7 @@ class ResortManager:  UIView, MatchPitchProtocol  {
     func updateScorelabel() {
         
         let fromValue = self.scoreText
-        let toValue = "\(self.gameManager.scoreTeam1):\(self.gameManager.scoreTeam2)"
+        let toValue = "\(self.scoreTeam1):\(self.scoreTeam2)"
 
         scoreText.speed = 1
         self.scoreText.string = toValue
@@ -123,6 +130,9 @@ class ResortManager:  UIView, MatchPitchProtocol  {
     }
     
     func scoreBoardAnimation() {
+        
+        self.delegate1?.setresultForAway(self.scoreTeam2)
+        self.delegate1?.setresultForHome(self.scoreTeam1)
         
         //animation timeframes
         let showScoreboardAtTime            = NSTimeInterval(0)
@@ -471,6 +481,10 @@ class ResortManager:  UIView, MatchPitchProtocol  {
     
     }
 
-
 }
+
+
+
+    
+
 
