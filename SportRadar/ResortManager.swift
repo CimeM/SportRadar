@@ -5,34 +5,29 @@
 //  Created by Martin Cimerman on 04/06/16.
 //  Copyright © 2016 Martin Cimerman. All rights reserved.
 //
-
-//import Foundation
 import UIKit
-//import QuartzCore
 
+// MatchPitchProtocol
 protocol MatchPitchProtocol: class {
     func setresultForHome(score: Int)
     func setresultForAway(score: Int)
 }
 
+
 class ResortManager:  UIView  {
 
-    
-    
     weak var delegate1: MatchPitchProtocol?
     
+    var gameManager         = GameManager()
+    let scoreBoard          = CALayer()
+    let scoreText           = CATextLayer()
+    var animationRunning    = false
     
-    var gameManager = GameManager()
-    let scoreBoard = CALayer()
-    let scoreText = CATextLayer()
-    var animationRunning = false
-    
-    var scoreTeam1 = 0
-    var scoreTeam2 = 0
+    var scoreTeam1          = 0
+    var scoreTeam2          = 0
 
     var typeOfCourt : CourtType
-    //var courtOuterFrame : CGRect
-
+    
     
     enum CourtType {
         case Tenis
@@ -40,8 +35,6 @@ class ResortManager:  UIView  {
         case Football
         case notDefined
     }
-    
-    
     
     init(frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100),
          courtType: CourtType = .Basketball) {
@@ -51,18 +44,24 @@ class ResortManager:  UIView  {
         
         self.scoreBoard.frame = CGRect(x: -100, y: 50, width: 100, height: 50)
         self.scoreBoard.backgroundColor = UIColor.blueColor().CGColor
+        
         self.scoreText.string = "\(self.scoreTeam1):\(self.scoreTeam2)"
         self.scoreText.frame = self.scoreBoard.frame
         self.scoreText.frame.origin = CGPoint(x:0, y:0)
         self.scoreText.alignmentMode = "center"
-        //layer.insertSublayer(self.scoreBoard, atIndex: 2)
+        
         scoreBoard.addSublayer(self.scoreText)
+        
         self.layer.addSublayer(self.scoreBoard)
-        
-        
         
     }
     
+        required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    // MARK: animation
     
     func showScoreboard() {
         
@@ -94,8 +93,6 @@ class ResortManager:  UIView  {
 
         self.scoreBoard.addAnimation(positionAnimation, forKey: "string")
         
-        //_ = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(ResortManager.hideScoreboard), userInfo: nil, repeats: false)
-        
     }
 
     func hideScoreboard() {
@@ -117,7 +114,6 @@ class ResortManager:  UIView  {
         let fromValue = self.scoreBoard.frame.origin.x
         let toValue = 0 - scoreBoard.frame.width
         CATransaction.setDisableActions(true)
-        print(time)
         scoreBoard.speed = 100
         self.scoreBoard.frame.origin.x = toValue
         let positionAnimation = CABasicAnimation(keyPath: "frame.origin.x")
@@ -166,14 +162,13 @@ class ResortManager:  UIView  {
         
     }
     
-    func resetAnimationRuningFlag () {
+    func resetAnimationRuningFlag() {
     
         self.animationRunning = false
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
+    // MARK: court drawing
     
     override func drawRect(rect: CGRect) {
         
@@ -331,7 +326,6 @@ class ResortManager:  UIView  {
                                            clockwise: true)
             penaltyAreaArch.stroke()
             
-            
             //mirror goal area
             penaltyAreaArch.applyTransform(mirrorOverXOrigin)
             penaltyAreaArch.applyTransform(translate)
@@ -476,7 +470,6 @@ class ResortManager:  UIView  {
         }
         else {
             //TBD
-            
         }
     
     }
