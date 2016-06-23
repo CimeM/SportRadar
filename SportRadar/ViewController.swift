@@ -15,7 +15,7 @@ class ViewController: UIViewController, MatchPitchProtocol, UITextFieldDelegate 
     
     
     var screenWidth             = CGFloat(0)
-    var contentVerticalMargin = CGFloat(40)
+    var contentVerticalMargin   = CGFloat(40)
     var courtFieldWidth         = CGFloat(0)
     var courtFieldHeight        = CGFloat(0)
     var courtX                  = CGFloat(0)
@@ -37,20 +37,12 @@ class ViewController: UIViewController, MatchPitchProtocol, UITextFieldDelegate 
     let footbalButton           = UIButton()
     
     
-    
-    
-    
     enum CourtType {
         case Tenis
         case Basketball
         case Football
         case notDefined
     }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,14 +51,20 @@ class ViewController: UIViewController, MatchPitchProtocol, UITextFieldDelegate 
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
         
-        setup()
+        
     }
     
-    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.courtFieldSetup()
+        self.interactionElementsSetup()
+    }
     
     override func viewDidAppear(animated: Bool) {
-        
-        // positions visual elements relative to the screen width & height
+
+    }
+    
+    func courtFieldSetup(){
         
         screenWidth = self.view.frame.width
         self.courtFieldWidth = screenWidth
@@ -75,13 +73,49 @@ class ViewController: UIViewController, MatchPitchProtocol, UITextFieldDelegate 
         self.courtY = view.frame.height/2 - courtFieldHeight
         self.courtFrame = CGRect(x: CGFloat(courtX) , y: CGFloat(courtY), width: screenWidth, height: courtFieldHeight)
         
+        //show initial court
         self.showCourt(.Football)
         
-        team1scoreInput.frame.origin.y =  courtY + courtFieldHeight + contentVerticalMargin
-        team2scoreInput.frame.origin.y =  courtY + courtFieldHeight + contentVerticalMargin
-        scoreboardButton.frame.origin.y =  contentVerticalMargin + team2scoreInput.frame.origin.y+team2scoreInput.frame.height
+    }
+    
+    func interactionElementsSetup() {
+        
+
+        textFieldInitialization()
+        
+        //scoreboard button frame
+        self.scoreboardButton.frame.origin.y = self.team2scoreInput.frame.origin.y + self.team2scoreInput.frame.height+contentVerticalMargin
         
         
+        // court change buttons
+        tenisButton.frame = CGRectMake(contentVerticalMargin/2, contentVerticalMargin, buttonWidth, buttonHeight)
+        tenisButton.backgroundColor = UIColor.blueColor()
+        tenisButton.setTitle("Tenis", forState: UIControlState.Normal)
+        tenisButton.addTarget(self, action: #selector(tenisButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(tenisButton)
+        
+        basketButton.frame = tenisButton.frame
+        basketButton.frame.origin.x += (tenisButton.frame.width+contentVerticalMargin)
+        basketButton.backgroundColor = UIColor.blueColor()
+        basketButton.setTitle("Basket", forState: UIControlState.Normal)
+        basketButton.addTarget(self, action: #selector(basketButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(basketButton)
+        
+        footbalButton.frame = basketButton.frame
+        footbalButton.frame.origin.x += (basketButton.frame.width+contentVerticalMargin)
+        footbalButton.backgroundColor = UIColor.blueColor()
+        footbalButton.setTitle("Footbal", forState: UIControlState.Normal)
+        footbalButton.addTarget(self, action: #selector(footbalButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(footbalButton)
+        
+        scoreboardButton.frame = CGRectMake(tenisButton.frame.origin.x+tenisButton.frame.width+contentVerticalMargin/2,
+                                            contentVerticalMargin + team2scoreInput.frame.origin.y+team2scoreInput.frame.height,
+                                            buttonWidth,
+                                            buttonHeight)
+        scoreboardButton.backgroundColor = UIColor.darkGrayColor()
+        scoreboardButton.setTitle("Button", forState: UIControlState.Normal)
+        scoreboardButton.addTarget(self, action: #selector(animateScoreboardAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(scoreboardButton)
         
         
     }
@@ -97,15 +131,8 @@ class ViewController: UIViewController, MatchPitchProtocol, UITextFieldDelegate 
     }
     
     
-    
-    
     func animateScoreboardAction(sender: UIButton!) {
 
-        
-        
-        //self.setresultForAway(Int(team1scoreInput.text!)!)
-        //self.setresultForHome(Int(team2scoreInput.text!)!)
-        //self.delegate?.setresultForHome(Int(team1scoreInput.text!)!)
         self.courtField.scoreTeam2 = Int(team2scoreInput.text!)!
         self.courtField.scoreTeam1 = Int(team1scoreInput.text!)!
         self.courtField.scoreBoardAnimation()
@@ -141,51 +168,19 @@ class ViewController: UIViewController, MatchPitchProtocol, UITextFieldDelegate 
      
      Draws the custom visual elements: buttons, court field, input fields
      */
-    func setup() {
-        
-        textFieldInitialization()
-        
-        //scoreboard button frame
-        self.scoreboardButton.frame.origin.y = self.team2scoreInput.frame.origin.y + self.team2scoreInput.frame.height+contentVerticalMargin
-        
-        
-        // court change buttons
-        tenisButton.frame = CGRectMake(contentVerticalMargin/2, contentVerticalMargin, buttonWidth, buttonHeight)
-        tenisButton.backgroundColor = UIColor.blueColor()
-        tenisButton.setTitle("Tenis", forState: UIControlState.Normal)
-        tenisButton.addTarget(self, action: #selector(tenisButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(tenisButton)
-        
-        basketButton.frame = tenisButton.frame
-        basketButton.frame.origin.x += (tenisButton.frame.width+contentVerticalMargin)
-        basketButton.backgroundColor = UIColor.blueColor()
-        basketButton.setTitle("Basket", forState: UIControlState.Normal)
-        basketButton.addTarget(self, action: #selector(basketButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(basketButton)
-        
-        footbalButton.frame = basketButton.frame
-        footbalButton.frame.origin.x += (basketButton.frame.width+contentVerticalMargin)
-        footbalButton.backgroundColor = UIColor.blueColor()
-        footbalButton.setTitle("Footbal", forState: UIControlState.Normal)
-        footbalButton.addTarget(self, action: #selector(footbalButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(footbalButton)
-        
-        scoreboardButton.frame = CGRectMake(tenisButton.frame.origin.x+tenisButton.frame.width+contentVerticalMargin/2, contentVerticalMargin, buttonWidth, buttonHeight)
-        scoreboardButton.backgroundColor = UIColor.darkGrayColor()
-        scoreboardButton.setTitle("Button", forState: UIControlState.Normal)
-        scoreboardButton.addTarget(self, action: #selector(animateScoreboardAction), forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(scoreboardButton)
-        
-        
-    }
+    
     
     
     func textFieldInitialization () {
         
         team1scoreInput = UITextField(frame: CGRect(x: contentVerticalMargin,
-            y: 0,
+            y: courtY + courtFieldHeight + contentVerticalMargin,
             width: self.buttonWidth,
             height: 40))
+        
+        //team1scoreInput.frame.origin.y = courtY + courtFieldHeight + contentVerticalMargin
+        
+        
         team1scoreInput.borderStyle = UITextBorderStyle.Line
         team1scoreInput.autocapitalizationType = UITextAutocapitalizationType.Words
         team1scoreInput.text = "0"
@@ -195,7 +190,7 @@ class ViewController: UIViewController, MatchPitchProtocol, UITextFieldDelegate 
         
         team2scoreInput = UITextField(frame: CGRect(
             x: team1scoreInput.frame.origin.x+team1scoreInput.frame.width+contentVerticalMargin,
-            y: 0,
+            y: team1scoreInput.frame.origin.y,
             width: self.buttonWidth,
             height: team1scoreInput.frame.height))
         team2scoreInput.borderStyle = UITextBorderStyle.Line
